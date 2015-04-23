@@ -17,8 +17,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define _GNU_SOURCE	/* crypt() */
-
 #include <libubox/avl-cmp.h>
 #include <libubox/blobmsg.h>
 #include <libubox/utils.h>
@@ -27,6 +25,7 @@
 #include <glob.h>
 #include <uci.h>
 #include <limits.h>
+#include <crypt.h>
 
 #ifdef HAVE_SHADOW
 #include <shadow.h>
