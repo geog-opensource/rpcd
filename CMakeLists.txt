@@ -22,13 +22,9 @@ IF(HAVE_SHADOW)
 ENDIF()
 
 FIND_LIBRARY(json NAMES json-c json)
-FIND_LIBRARY(crypt NAMES crypt)
-IF(crypt STREQUAL "crypt-NOTFOUND")
-  SET(crypt "")
-ENDIF()
 
 ADD_EXECUTABLE(rpcd main.c exec.c session.c uci.c plugin.c)
-TARGET_LINK_LIBRARIES(rpcd ubox ubus uci dl blobmsg_json ${json} ${crypt})
+TARGET_LINK_LIBRARIES(rpcd ubox ubus uci dl blobmsg_json crypt ${json})
 
 SET(PLUGINS "")
 
