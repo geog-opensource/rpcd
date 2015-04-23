@@ -29,6 +29,9 @@
 
 #include <rpcd/plugin.h>
 
+/* #define PHYNAME */
+#undef PHYNAME
+
 
 static struct blob_buf buf;
 static const struct iwinfo_ops *iw;
@@ -236,8 +239,10 @@ rpc_iwinfo_call_hwmodes(const char *name)
 	{
 		c = blobmsg_open_array(&buf, name);
 
+#ifdef IWINFO_80211_AC
 		if (modes & IWINFO_80211_AC)
 			blobmsg_add_string(&buf, NULL, "ac");
+#endif
 
 		if (modes & IWINFO_80211_A)
 			blobmsg_add_string(&buf, NULL, "a");
@@ -279,7 +284,9 @@ rpc_iwinfo_info(struct ubus_context *ctx, struct ubus_object *obj,
 
 	blob_buf_init(&buf, 0);
 
+#ifdef PHYNAME
 	rpc_iwinfo_call_str("phy", iw->phyname);
+#endif
 
 	rpc_iwinfo_call_str("ssid", iw->ssid);
 	rpc_iwinfo_call_str("bssid", iw->bssid);
@@ -645,6 +652,7 @@ rpc_iwinfo_phyname(struct ubus_context *ctx, struct ubus_object *obj,
                    struct ubus_request_data *req, const char *method,
                    struct blob_attr *msg)
 {
+#ifdef PHYNAME
 	int i;
 	bool found = false;
 	char res[IWINFO_BUFSIZE];
@@ -687,6 +695,9 @@ rpc_iwinfo_phyname(struct ubus_context *ctx, struct ubus_object *obj,
 	rpc_iwinfo_close();
 
 	return found ? UBUS_STATUS_OK : UBUS_STATUS_NOT_FOUND;
+#else
+	return UBUS_STATUS_NOT_FOUND;
+#endif
 }
 
 static int
